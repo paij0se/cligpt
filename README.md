@@ -6,9 +6,9 @@
 
 - Build the cli.
 
-`./build.s`
+`./build.sh`
 
-- Run the cli for create the config directory.
+- Run `./cligpt` for create the config directory.
 
 `$ ./cligpt "create the config directory cuh"`
 
