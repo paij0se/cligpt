@@ -1,13 +1,14 @@
 package cli
 
 import (
+	"errors"
+	"fmt"
 	"os"
 
 	"gopkg.in/yaml.v3"
 )
 
 var defaultConfigYml = map[string]string{
-	"auth":       "token",
 	"model":      "text-davinci-003",
 	"max_tokens": "256",
 }
@@ -30,9 +31,17 @@ func CreateConfigDirectory() error {
 
 	os.MkdirAll(cligptConfigDir, 0755)
 
-	if _, err := os.Stat(cligptConfigFile); os.IsExist(err) {
+	if _, err = os.Stat(cligptConfigFile); !os.IsNotExist(err) {
+		return nil
+	}
+
+	// create default config
+	var token string
+	if token, err = tokenRequest(); err != nil {
 		return err
 	}
+	defaultConfigYml["auth"] = token
+
 	file, err := os.Create(cligptConfigFile)
 	if err != nil {
 		return err
@@ -61,4 +70,16 @@ func ReadYml() (map[string]string, error) {
 	decoder := yaml.NewDecoder(file)
 	err = decoder.Decode(&config)
 	return config, err
+}
+
+var errTokenLenNotValid = errors.New("the token len is not valid")
+
+func tokenRequest() (string, error) {
+	var token string
+	fmt.Print("Please write your token: ")
+	fmt.Scanln(&token)
+	if len(token) == 0 {
+		return token, errTokenLenNotValid
+	}
+	return token, nil
 }
