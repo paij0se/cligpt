@@ -35,16 +35,25 @@ type TextCompletionUsage struct {
 }
 
 func main() {
-	cli.CreateConfigDirectory()
-	if len(cli.ReadFromYml("auth")) < 51 {
+	var err error
+	var config map[string]string
+	if err = cli.CreateConfigDirectory(); err != nil {
+		log.Fatal(err)
+	}
+
+	if config, err = cli.ReadYml(); err != nil {
+		log.Fatal(err)
+	}
+
+	if len(config["auth"]) < 51 {
 		log.Fatal("Ensure to insert a valid token in cligpt.yml file.")
 	}
 	client := &http.Client{}
 	var data = strings.NewReader(`{
-		  "model": "` + cli.ReadFromYml("model") + `",
+		  "model": "` + config["model"] + `",
 		  "prompt": "` + os.Args[1] + `",
 		  "temperature": 0.7,
-		  "max_tokens": ` + cli.ReadFromYml("max_tokens") + `,
+		  "max_tokens": ` + config["max_tokens"] + `,
 		  "top_p": 1,
 		  "frequency_penalty": 0,
 		  "presence_penalty": 0
@@ -54,11 +63,10 @@ func main() {
 		log.Fatal(err)
 	}
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", `Bearer `+cli.ReadFromYml("auth")+``)
+	req.Header.Set("Authorization", `Bearer `+config["auth"]+``)
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal(err)
-		log.Println("The token is valid?")
+		log.Fatal("The token is valid?", err)
 	}
 	defer resp.Body.Close()
 	bodyText, err := ioutil.ReadAll(resp.Body)
