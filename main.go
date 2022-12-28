@@ -58,8 +58,6 @@ func main() {
 		  "frequency_penalty": 0,
 		  "presence_penalty": 0
 		}`)
-	// check if the token is valid.
-	cli.CheckToken(config["auth"])
 	req, err := http.NewRequest("POST", "https://api.openai.com/v1/completions", data)
 	if err != nil {
 		fmt.Println(err, req)
@@ -69,6 +67,11 @@ func main() {
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatal("The token is valid?", err)
+	}
+	// check if the token is valid.
+	if resp.StatusCode == 401 {
+		fmt.Println("The token is invalid")
+		os.Exit(0)
 	}
 	defer resp.Body.Close()
 	bodyText, err := ioutil.ReadAll(resp.Body)
