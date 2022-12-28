@@ -58,9 +58,11 @@ func main() {
 		  "frequency_penalty": 0,
 		  "presence_penalty": 0
 		}`)
+	// check if the token is valid.
+	cli.CheckToken(config["auth"])
 	req, err := http.NewRequest("POST", "https://api.openai.com/v1/completions", data)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err, req)
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", `Bearer `+config["auth"]+``)
@@ -71,7 +73,7 @@ func main() {
 	defer resp.Body.Close()
 	bodyText, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	var response Data
 	json.Unmarshal(bodyText, &response)
@@ -81,5 +83,4 @@ func main() {
 	choice := response.Choices[0]
 	text := choice.Text
 	fmt.Println(text)
-	//fmt.Println(bodyText)
 }
