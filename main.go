@@ -48,8 +48,14 @@ func main() {
 	if len(config["auth"]) < 51 {
 		log.Fatal("Ensure to insert a valid token in cligpt.yml file.")
 	}
-	client := &http.Client{}
-	var data = strings.NewReader(`{
+	if len(os.Args) != 2 {
+		fmt.Println(`No arguments!
+		$ cligpt 'How does ChatGPT API work?'`)
+		os.Exit(0)
+	} else {
+
+		client := &http.Client{}
+		var data = strings.NewReader(`{
 		  "model": "` + config["model"] + `",
 		  "prompt": "` + os.Args[1] + `",
 		  "temperature": 0.7,
@@ -58,32 +64,33 @@ func main() {
 		  "frequency_penalty": 0,
 		  "presence_penalty": 0
 		}`)
-	req, err := http.NewRequest("POST", "https://api.openai.com/v1/completions", data)
-	if err != nil {
-		fmt.Println(err, req)
+		req, err := http.NewRequest("POST", "https://api.openai.com/v1/completions", data)
+		if err != nil {
+			fmt.Println(err, req)
+		}
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Authorization", `Bearer `+config["auth"]+``)
+		resp, err := client.Do(req)
+		if err != nil {
+			log.Fatal("The token is valid?", err)
+		}
+		// check if the token is valid.
+		if resp.StatusCode == 401 {
+			fmt.Println("The token is invalid")
+			os.Exit(0)
+		}
+		defer resp.Body.Close()
+		bodyText, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Println(err)
+		}
+		var response Data
+		json.Unmarshal(bodyText, &response)
+		if err != nil {
+			log.Println(err)
+		}
+		choice := response.Choices[0]
+		text := choice.Text
+		fmt.Println(text)
 	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", `Bearer `+config["auth"]+``)
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Fatal("The token is valid?", err)
-	}
-	// check if the token is valid.
-	if resp.StatusCode == 401 {
-		fmt.Println("The token is invalid")
-		os.Exit(0)
-	}
-	defer resp.Body.Close()
-	bodyText, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Println(err)
-	}
-	var response Data
-	json.Unmarshal(bodyText, &response)
-	if err != nil {
-		log.Println(err)
-	}
-	choice := response.Choices[0]
-	text := choice.Text
-	fmt.Println(text)
 }
