@@ -86,7 +86,6 @@ func main() {
 			log.Fatal(err)
 		}
 
-		println(string(body))
 		req, err := http.NewRequest("POST", "https://api.openai.com/v1/completions", bytes.NewBuffer(body))
 		if err != nil {
 			fmt.Println(err, req)
