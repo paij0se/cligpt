@@ -4,7 +4,7 @@
 
 Go 1.17+
 ```
-go install github.com/falcucci/cligpt@latest
+go install github.com/paij0se/cligpt@latest
 ```
 
 test
