@@ -10,7 +10,7 @@ import (
 
 var defaultConfigYml = map[string]string{
 	"model":      "text-davinci-003",
-	"max_tokens": "256",
+	"max_tokens": "2000",
 }
 
 var configFolderName = "/cligpt/"

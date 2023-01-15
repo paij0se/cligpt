@@ -36,7 +36,7 @@ Et magna in mundo fata sequamur.
 ```haskell
 auth: token
 model: text-davinci-003
-max_tokens: 256
+max_tokens: 2000
 ```
 
 <h1>Building</h1>
