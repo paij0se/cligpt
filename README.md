@@ -47,6 +47,8 @@ max_tokens: 2000
 
 - Build the cli.
 
-`./build.sh`
+```bash
+go build
+```
 
 ![image](https://user-images.githubusercontent.com/69026987/209194859-a2456a7d-796f-47e0-8a8e-062848e2cbaf.png)
