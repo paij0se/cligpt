@@ -4,14 +4,13 @@
 
 Go 1.17+
 ```
-$ go install github.com/paij0se/cligpt@latest
+go install github.com/falcucci/cligpt@latest
 ```
 
 test
 
-```
-❯ cligpt "Do a poem about Golang in Latin"
-
+```bash
+cligpt "Do a poem about Golang in Latin"
 
 Nunc est tempus, ut in Golang gradimur
 Mox nostris verbis linguam didicimus
@@ -43,12 +42,10 @@ max_tokens: 2000
 
 - Clone the repository.
 
-`$ git clone https://github.com/paij0se/cligpt`
+`git clone https://github.com/falcucci/cligpt`
 
 - Build the cli.
 
 ```bash
 go build
 ```
-
-![image](https://user-images.githubusercontent.com/69026987/209194859-a2456a7d-796f-47e0-8a8e-062848e2cbaf.png)
