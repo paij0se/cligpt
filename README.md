@@ -42,7 +42,7 @@ max_tokens: 2000
 
 - Clone the repository.
 
-`git clone https://github.com/falcucci/cligpt`
+`git clone https://github.com/paij0se/cligpt`
 
 - Build the cli.
 
