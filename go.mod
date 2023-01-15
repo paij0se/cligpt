@@ -1,4 +1,4 @@
-module github.com/falcucci/cligpt
+module github.com/paij0se/cligpt
 
 go 1.19
 

@@ -10,7 +10,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/falcucci/cligpt/cli"
+	"github.com/paij0se/cligpt/cli"
 )
 
 type Data struct {
