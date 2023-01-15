@@ -1,15 +1,16 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"strings"
+	"strconv"
 
-	"github.com/paij0se/cligpt/cli"
+	"github.com/falcucci/cligpt/cli"
 )
 
 type Data struct {
@@ -19,6 +20,16 @@ type Data struct {
 	Model   string                 `json:"model"`
 	Choices []TextCompletionChoice `json:"choices"`
 	Usage   TextCompletionUsage    `json:"usage"`
+}
+
+type RequestBody struct {
+	Model            string  `json:"model"`
+	Prompt           string  `json:"prompt"`
+	Temperature      float64 `json:"temperature"`
+	MaxTokens        int64   `json:"max_tokens"`
+	TopP             float64 `json:"top_p"`
+	FrequencyPenalty float64 `json:"frequency_penalty"`
+	PresencePenalty  float64 `json:"presence_penalty"`
 }
 
 type TextCompletionChoice struct {
@@ -45,6 +56,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	maxTokens, err := strconv.ParseInt(config["max_tokens"], 10, 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	if len(config["auth"]) < 51 {
 		log.Fatal("Ensure to insert a valid token in cligpt.yml file.")
 	}
@@ -55,16 +71,22 @@ func main() {
 	} else {
 
 		client := &http.Client{}
-		var data = strings.NewReader(`{
-		  "model": "` + config["model"] + `",
-		  "prompt": "` + os.Args[1] + `",
-		  "temperature": 0.7,
-		  "max_tokens": ` + config["max_tokens"] + `,
-		  "top_p": 1,
-		  "frequency_penalty": 0,
-		  "presence_penalty": 0
-		}`)
-		req, err := http.NewRequest("POST", "https://api.openai.com/v1/completions", data)
+		requestBody := RequestBody{
+			Model:            config["model"],
+			Prompt:           os.Args[1],
+			Temperature:      0.7,
+			MaxTokens:        maxTokens,
+			TopP:             1,
+			FrequencyPenalty: 0,
+			PresencePenalty:  0,
+		}
+
+		body, err := json.Marshal(requestBody)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		req, err := http.NewRequest("POST", "https://api.openai.com/v1/completions", bytes.NewBuffer(body))
 		if err != nil {
 			fmt.Println(err, req)
 		}
