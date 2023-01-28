@@ -30,7 +30,7 @@ Et magna in mundo fata sequamur.
 
 <h1>Configuration</h1>
 
-- If is the first time you run the cli, You are going to see a error message, so, insert the OpenAI token in your config directory that is located in `$HOME/.config/cligpt/cligpt.yml`
+- If is the first time you run the cli, You are going to see a error message, so, insert the OpenAI token in your config directory that is located in `$HOME/.config/cligpt/cligpt.yml` And in Windows is located in `C:\Users\user\AppData\Roaming\cligpt`
 
 ```haskell
 auth: token
